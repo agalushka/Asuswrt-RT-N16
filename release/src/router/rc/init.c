@@ -4081,6 +4081,9 @@ int init_nvram(void)
 			if (!(get_wans_dualwan()&WANSCAP_2G))
 				add_lan_phy("eth1");
 
+			if (!(get_wans_dualwan()&WANSCAP_5G))
+				add_lan_phy("eth2");
+
 			if (nvram_get("wans_dualwan")) {
 				set_wan_phy("");
 				for(unit = WAN_UNIT_FIRST; unit < WAN_UNIT_MAX; ++unit) {
@@ -4092,6 +4095,8 @@ int init_nvram(void)
 					}
 					else if (get_dualwan_by_unit(unit) == WANS_DUALWAN_IF_2G)
 						add_wan_phy("eth1");
+					else if (get_dualwan_by_unit(unit) == WANS_DUALWAN_IF_5G)
+						add_wan_phy("eth2");
 					else if (get_dualwan_by_unit(unit) == WANS_DUALWAN_IF_WAN) {
 						if (nvram_get("switch_wantag") && !nvram_match("switch_wantag", "") && !nvram_match("switch_wantag", "none")) {
 							if (!nvram_match("switch_wan0tagid", ""))
@@ -4113,20 +4118,21 @@ int init_nvram(void)
 				nvram_set("wan_ifnames", "eth0 usb");
 		}
 		else{
-			nvram_set("wandevs", "et0");
-			nvram_set("lan_ifnames", "vlan1 eth1");
-			nvram_set("wan_ifnames", "eth0");
-			nvram_unset("wan1_ifname");
+		    nvram_set("wandevs", "et0");
+		    nvram_set("lan_ifnames", "vlan1 eth1 eth2");
+		    nvram_set("wan_ifnames", the_wan_phy());
+		    nvram_unset("wan1_ifname");
 		}
 #else
-		nvram_set("lan_ifnames", "vlan1 eth1");
+		nvram_set("lan_ifnames", "vlan1 eth1 eth2");
 		nvram_set("wan_ifnames", "eth0");
 #endif
-		nvram_set("wl_ifnames", "eth1");
+		nvram_set("wl_ifnames", "eth1 eth2");
 		nvram_set("wl0_vifnames", "wl0.1");
-		nvram_set("wl1_vifnames", "");
+		nvram_set("wl1_vifnames", "wl1.1");
 
 		nvram_set("wl0_vifnames", "wl0.1");	/* Only one gueset network? */
+		nvram_set("wl1_vifnames", "wl1.1");
 
 		nvram_set_int("btn_rst_gpio", 6|GPIO_ACTIVE_LOW);
 		nvram_set_int("btn_wps_gpio", 8|GPIO_ACTIVE_LOW);
@@ -4136,9 +4142,17 @@ int init_nvram(void)
 		nvram_set("ohci_ports", "2-2 2-1");
 		nvram_set("boardflags", "0x310");
 		nvram_set("sb/1/boardflags", "0x310");
+		nvram_set("boardflags2", "0x400");
+		nvram_set("sb/1/boardflags2", "0x400");
+		/* change lan interface to vlan0 */
+		nvram_set("vlan0hwname", "et0");
+		nvram_set("landevs", "vlan0 wl0 wl1");
+		nvram_unset("vlan2ports");
+		nvram_unset("vlan2hwname");
+		/* end */
 		if (!nvram_get("ct_max"))
 			nvram_set("ct_max", "300000");
-		add_rc_support("2.4G update usbX2 mssid");
+		add_rc_support("2.4G 5G usbX2 update mssid no5gmssid");
 		add_rc_support("switchctrl"); // broadcom: for jumbo frame only
 		add_rc_support("manual_stb");
 		break;
