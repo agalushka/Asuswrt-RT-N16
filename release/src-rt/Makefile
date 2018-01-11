@@ -63,15 +63,17 @@ endif
 
 export BRANCH := $(shell git branch)
 
-ifeq ($(BRANCH),) 
-include ./router/extendno.conf
-else
-ifeq ($(EXTENDTYPE),)
-export EXTENDNO := $(shell git log --pretty=oneline asuswrt_$(KERNEL_VER).$(FS_VER).$(SERIALNO)..HEAD | wc -l)-g$(shell git log --pretty=format:'%h' -n 1)
-else
-export EXTENDNO := $(shell git log --pretty=oneline asuswrt_$(KERNEL_VER).$(FS_VER).$(SERIALNO)..HEAD | wc -l)-g$(shell git log --pretty=format:'%h' -n 1)-$(EXTENDTYPE)
-endif
-endif
+#ifeq ($(BRANCH),) 
+#include ./router/extendno.conf
+#else
+#ifeq ($(EXTENDTYPE),)
+#export EXTENDNO := $(shell git log --pretty=oneline asuswrt_$(KERNEL_VER).$(FS_VER).$(SERIALNO)..HEAD | wc -l)-g$(shell git log --pretty=format:'%h' -n 1)
+#else
+#export EXTENDNO := $(shell git log --pretty=oneline asuswrt_$(KERNEL_VER).$(FS_VER).$(SERIALNO)..HEAD | wc -l)-g$(shell git log --pretty=format:'%h' -n 1)-$(EXTENDTYPE)
+#endif
+#endif
+
+export EXTENDNO := 7379-g$(shell git log --pretty=format:'%h' -n 1)
 
 ifeq ($(EXTENDNO),)
 export EXTENDNO := 0-g$(shell git log --pretty=format:'%h' -n 1)
