@@ -339,11 +339,11 @@ else
 	ctools/lzma_9k e $(PLATFORMDIR)/piggy $(PLATFORMDIR)/vmlinuz-lzma -eos -lc2 -lp2 -pb2 -mfbt2
 	ctools/trx -o image/linux-lzma.trx lzma-loader/loader.gz $(PLATFORMDIR)/vmlinuz-lzma $(PLATFORMDIR)/target.image
 endif
-ifneq ($(CONFIG_BCMWL5),)
-	ctools/trx_asus -i image/linux-lzma.trx -r $(BUILD_NAME),$(KERNEL_VER).$(FS_VER),$(SERIALNO),$(EXTENDNO),image/$(IMGNAME).trx
-else
+#ifneq ($(CONFIG_BCMWL5),)
+#	ctools/trx_asus -i image/linux-lzma.trx -r $(BUILD_NAME),$(KERNEL_VER).$(FS_VER),$(SERIALNO),$(EXTENDNO),image/$(IMGNAME).trx
+#else
 	ctools/trx_asus -i image/linux-lzma.trx -r $(BUILD_NAME),$(KERNEL_VER).$(FS_VER),image/$(IMGNAME).trx
-endif
+#endif
 	@rm -f image/linux-lzma.trx
 endif
 	md5sum image/$(IMGNAME).trx > image/$(IMGNAME).md5
